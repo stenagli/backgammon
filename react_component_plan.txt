@@ -1,0 +1,11 @@
+React Component structure
+
+Board
+  state: array of number of pieces at each location
+
+  4 sections
+    6 columns each
+      up to 6 pieces in each column, before the additional are numbers in the button piece
+  2 waiting areas (one for each color)
+  2 end lines (one for each color)
+  
