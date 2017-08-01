@@ -9,3 +9,22 @@ Board
   2 waiting areas (one for each color)
   2 end lines (one for each color)
   
+24 points (triangles) * 31 (15+15+1) possile values
+2 bars, 1 for each color; [1,15]*2 = 16 possible values for a bar = 4 bits. Two bars is 8 bits.
+
+2 homes? Can calculate from 15-(number of pieces on the board). Would be 16 each = 32 possible values.
+
+1 bit (boolean) for whose turn it is.
+
+5 bits per point, 24 points = 120 bits
++4 bits for each bar = 128 bits.
+1 bit for turn = 129 bits
+
+dice:
+6+5+4+3+2+1 = 21 = 5 bits
+
+129+5 = 134 bits
+
+128 bits = 16 bytes = 4 32-bit integers
+8 bits = 1 byte = 1 char for dice roll and whose turn
+
