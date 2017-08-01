@@ -1,9 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Board from './containers/Board'
 
 $(function() {
   ReactDOM.render(
-    <h1>Boo yaa</h1>,
+    <Board />,
     document.getElementById('app')
   );
 });
