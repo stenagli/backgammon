@@ -8,13 +8,13 @@ class Point extends React.Component {
   }
 
   render() {
-    let column
-    let stop = min(this.props.checkers, 5)
-    for(let i = 0, i < stop, i++){
+    //let column
+    //let stop = min(this.props.checkers, 5)
+    //for(let i = 0, i < stop, i++){
 
-
-    }
+    //}
     return (
+      <div>{this.props.checkers}</div>
     )
   }
 }
