@@ -1,4 +1,5 @@
 import React from 'react'
+import Point from './Point''
 
 class Board extends React.Component {
   constructor(props) {
