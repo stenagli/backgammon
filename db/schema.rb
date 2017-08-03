@@ -10,14 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170803225537) do
+ActiveRecord::Schema.define(version: 20170803233351) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "games", force: :cascade do |t|
-    t.integer "user1_id"
-    t.integer "user2_id"
+    t.integer "white_user_id"
+    t.integer "black_user_id"
     t.integer "state1"
     t.integer "state2"
     t.integer "state3"
