@@ -10,4 +10,7 @@ class GamesController < ApplicationController
     # The show page then issues a fetch request to api/v1/games#show to retrieve the new game
   end
 
+  def new
+    @users = User.select("id","username")
+  end
 end
