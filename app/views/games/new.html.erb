@@ -1,4 +1,4 @@
-<p>Select a user to play a game against</p>
+<h1>Select a user to play a game against</h1>
 <ul>
   <% @users.each do |u| %>
     <li><%= link_to u.username, games_path(user_id: u.id), method: :post %></li>
