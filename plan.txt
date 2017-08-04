@@ -28,3 +28,6 @@ dice:
 128 bits = 16 bytes = 4 32-bit integers
 8 bits = 1 byte = 1 char for dice roll and whose turn
 
+As a React Component
+I want to know whether I'm white or black
+and also whether it's my turn or not.

@@ -3,8 +3,10 @@ import ReactDOM from 'react-dom';
 import Board from './containers/Board'
 
 $(function() {
+  let appDiv =  document.getElementById('app');
+
   ReactDOM.render(
-    <Board />,
-    document.getElementById('app')
+    <Board gameId={appDiv.dataset.gameId} />,
+    appDiv
   );
 });

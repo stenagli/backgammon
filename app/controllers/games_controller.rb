@@ -1,7 +1,10 @@
 class GamesController < ApplicationController
 
+  before_action :authenticate_user!
+
   def show
     # Renders a React component for the game
+    @game_id = params[:id]
 
   end
 
