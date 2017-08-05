@@ -1,5 +1,5 @@
 import React from 'react'
-import Point from './Point''
+import Point from './Point'
 
 class Board extends React.Component {
   constructor(props) {
@@ -7,7 +7,7 @@ class Board extends React.Component {
     this.state = {
       white: null,
       myTurn: null,
-      board: []
+      board: [],
       die1: null,
       die2: null
     }
@@ -94,7 +94,9 @@ class Board extends React.Component {
   }
 
   componentDidMount() {
-      fetch(`/api/v1/games/${this.props.gameId}`)
+      fetch(`/api/v1/games/${this.props.gameId}`, {
+        credentials: 'same-origin'
+      })
       .then(response => {
         if (response.ok) {
           return response;
@@ -104,18 +106,39 @@ class Board extends React.Component {
           throw(error);
         }
       })
-      .then(response => response.json())
-      .then(body => {
+      .then(response => response.arrayBuffer())
+      .then(arrayBuffer => {
+        let view = new Int32Array(arrayBuffer);
+        let state1 = view[0];
+        console.log(state1);
+        let state2 = view[1];
+        let state3 = view[2];
+        let state4 = view[3];
+        let turn_and_dice = view[4];
+        console.log(turn_and_dice)
+        let die1 = turn_and_dice & 0x7;
+        console.log(die1)
+        turn_and_dice >>>= 3;
+        let die2 = turn_and_dice & 0x7;
+        console.log(die2)
+        turn_and_dice >>>= 3;
+        // It is myTurn if the final two bits are equal
+        let myTurn = turn_and_dice === 0x0 || turn_and_dice === 0x3
+        console.log(myTurn)
+        turn_and_dice >>>= 1;
+        let white = turn_and_dice === 0x1;
+        console.log(white)
+
         this.setState({
-          white: body.turn_and_dice & (1 << 7)
-          myTurn: body.turn_and_dice & (1 << 6)
-          die1: body.turn_and_dice & (0x7) // bits 1-3
-          die2: body.turn_and_dice & (0x38) // bits 4-6
+          white: white,
+          myTurn: myTurn,
+          die1: die1,
+          die2: die2
         })
-        if(body.state1 === null)
-          newBoard();
+        if(state1 === 0 && state2 === 0 && state3 === 0 && state4 === 0)
+          this.newBoard();
         else
-          remoteBoard(body.state1, body.state2, body.state3, body.state4);
+          this.remoteBoard(state1, state2, state3, state4);
       })
       .catch(error => console.error(`Error in fetch: ${error.message}`));
   }

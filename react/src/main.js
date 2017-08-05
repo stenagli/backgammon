@@ -6,7 +6,7 @@ $(function() {
   let appDiv =  document.getElementById('app');
 
   ReactDOM.render(
-    <Board gameId={appDiv.dataset.gameId} />,
+    <Board gameId={appDiv.dataset.gameid} />,
     appDiv
   );
 });
