@@ -8,8 +8,7 @@ class Board extends React.Component {
       white: null,
       myTurn: null,
       board: [],
-      die1: null,
-      die2: null,
+      dice: [],
       pointClicked: null,
       possibleMoves: []
     }
@@ -24,6 +23,37 @@ class Board extends React.Component {
     // remove a checker from pointClicked, and
     // put one at the i clicked.
     // Otherwise, update pointClicked and possibleMoves.
+
+    if(this.state.possibleMoves.includes(i)){
+      // Move the checker from pointClicked to i
+      b = this.state.board;
+      if(this.state.white){
+        b[this.state.pointClicked] -= 1;
+        b[i] += 1;
+      }
+      else {
+        b[this.state.pointClicked] += 1;
+        b[i] -= 1;
+      }
+
+      // TODO Send the new board to the server via ActionCable
+    }
+    else if((this.state.white === (b[i] > 0)) || ((!this.state.white) === (b[i] < 0))) {
+      // user's piece
+      this.setState( {pointClicked: i} );
+      let possibleMoves = [];
+      this.state.dice.forEach ((die) => {
+        if((i - die) >= 0) {
+          if(this.state.white && (b[i-die] >= -1)){
+            possibleMoves.push(i)
+          }
+          else if(!this.state.white && (b[i-die] <= 1)){
+            possibleMoves.push(i)
+          }
+        }
+      });
+    }
+  }
 
 
   }
@@ -203,6 +233,9 @@ class Board extends React.Component {
         turn_and_dice >>>= 3;
         let die2 = turn_and_dice & 0x7;
         console.log(die2)
+        let dice = [die1, die2];
+        if(die1 === die2) // doubles
+          dice = [...dice, ...dice];
         turn_and_dice >>>= 3;
         // It is myTurn if the final two bits are equal
         let myTurn = turn_and_dice === 0x0 || turn_and_dice === 0x3
@@ -214,8 +247,7 @@ class Board extends React.Component {
         this.setState({
           white: white,
           myTurn: myTurn,
-          die1: die1,
-          die2: die2
+          dice: dice,
         })
         if(state1 === 0 && state2 === 0 && state3 === 0 && state4 === 0)
           this.newBoard(white);
