@@ -9,12 +9,27 @@ class Board extends React.Component {
       myTurn: null,
       board: [],
       die1: null,
-      die2: null
+      die2: null,
+      pointClicked: null,
+      possibleMoves: []
     }
   }
 
-  newBoard() {
+  handleClick(i) {
+    // If board[i] is clicked,
+    // add all possible indexes that the checker could be moved to
+    // into this.state.possibleMoves
+    //
+    // If i clicked is within possibleMoves, 
+    // remove a checker from pointClicked, and
+    // put one at the i clicked.
+    // Otherwise, update pointClicked and possibleMoves.
+
+
+  }
+  newBoard(white) {
     let newBoard = new Array(26);
+    newBoard.fill(0);
     newBoard[0] = -2;
     newBoard[5] = 5;
     newBoard[7] = 3;
@@ -23,6 +38,16 @@ class Board extends React.Component {
     newBoard[16] = -3;
     newBoard[18] = -5;
     newBoard[23] = 2;
+
+    if(!white) {
+      // reverse the board
+      for(let i = 0; i < 12; i++){
+        let temp = newBoard[i];
+        newBoard[i] = newBoard[23-i];
+        newBoard[23-i] = temp;
+      }
+    }
+
     this.setState( {board: newBoard} );
   }
 
@@ -89,6 +114,15 @@ class Board extends React.Component {
     s4 >>>= 4;
     // extract next 4 bits for black's bar
     board[25] = s4 & 0xF;
+
+    if(!white) {
+      // reverse the board
+      for(let i = 0; i < 12; i++){
+        let temp = newBoard[i];
+        newBoard[i] = newBoard[23-i];
+        newBoard[23-i] = temp;
+      }
+    }
 
     this.setState( {board: board} );
   }
@@ -184,16 +218,48 @@ class Board extends React.Component {
           die2: die2
         })
         if(state1 === 0 && state2 === 0 && state3 === 0 && state4 === 0)
-          this.newBoard();
+          this.newBoard(white);
         else
-          this.remoteBoard(state1, state2, state3, state4);
+          this.remoteBoard(state1, state2, state3, state4, white);
       })
       .catch(error => console.error(`Error in fetch: ${error.message}`));
   }
 
   render() {
+
+    // TODO: Add class to Points
+    // with an index in this.state.possibleMoves
+    // and pass down a wrapper function for handleClick(i)
+    let topRow = new Array(12);
+    for(let i = 0; i < 12; i++) {
+      topRow[i] = (<Point
+        className="topPoint"
+        key={i}
+        checkers = {this.state.board[12+i]}
+        />)
+    }
+
+    let bottomRow = new Array(12);
+    for(let i = 0; i < 12; i++) {
+      bottomRow[i] = (<Point
+        className="bottomPoint"
+        key={i}
+        checkers={this.state.board[11-i]}
+        />)
+    }
+
     return (
-      <p>I am a React game board!</p>
+      <div>
+        <p>I am a React game board!</p>
+        <div className="topRow">
+          {topRow}  
+        </div>
+        <div className="bottomRow">
+          {bottomRow}  
+        </div>
+      </div>
+
+
     )
   }
 }

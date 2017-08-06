@@ -14,7 +14,7 @@ class Point extends React.Component {
 
     //}
     return (
-      <div>{this.props.checkers}</div>
+      <div className={this.props.className}>{this.props.checkers}|</div>
     )
   }
 }
