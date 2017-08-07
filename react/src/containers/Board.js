@@ -276,8 +276,31 @@ class Board extends React.Component {
           this.newBoard(white);
         else
           this.remoteBoard(state1, state2, state3, state4, white);
-      })
+
+        console.log("Starting subscription")
+        App.gameChannel = App.cable.subscriptions.create(
+          {
+            channel: "GameChannel",
+            game_id: this.props.gameId
+          },
+          {
+            connected: () => console.log("GameChannel connected"),
+            disconnected: () => console.log("GameChannel disconnected"),
+            received: data => console.log(data)
+          }
+        );
+
+        console.log("Finished subscription, starting message")
+
+        App.gameChannel.send("Hello World!");
+        App.gameChannel.send({ sent_by: "Paul", body: "This is a cool chat app." })
+
+        console.log("Finished message")
+          })
       .catch(error => console.error(`Error in fetch: ${error.message}`));
+
+    App.gameChannel.send({message: "Test message!"});
+
   }
 
   render() {

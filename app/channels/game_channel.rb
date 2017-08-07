@@ -9,6 +9,7 @@ class GameChannel < ApplicationCable::Channel
   end
 
   def receive(data)
+    binding.pry
     ActionCable.server.broadcast("game_#{params[:game_id]}", data)
   end
 end
