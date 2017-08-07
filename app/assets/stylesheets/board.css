@@ -3,7 +3,6 @@
   flex-direction: row;
 }
 
-/*
 .topPoint {
   width: 0;
   height: 0;
@@ -12,6 +11,15 @@
   border-top: 6em solid brown;
 }
 
+.topPoint p {
+  margin-top: -6em;
+}
+
+.bottomPoint p {
+  margin-top: 5em;
+}
+
+
 .bottomPoint {
   width: 0;
   height: 0;
@@ -19,10 +27,18 @@
   border-right: 1em solid transparent;
   border-bottom: 6em solid brown;
 }
-*/
 
-.possibleMove {
-  background-color: green;
+
+.topPoint.possibleMove {
+  border-top-color: green;
+}
+
+.bottomPoint.possibleMove {
+  border-bottom-color: green;
+}
+
+.white {
+  color: white;
 }
 
 body {

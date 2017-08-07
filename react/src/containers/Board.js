@@ -43,10 +43,11 @@ class Board extends React.Component {
 
       // Remove the die from dice
       let dice = this.state.dice;
-      dice.splice(dice.indexOf(i), 1);
+      dice.splice(dice.indexOf(this.state.pointClicked - i), 1);
       this.setState({
         board: b,
-        dice: dice
+        dice: dice,
+        possibleMoves: []
       })
 
 
@@ -56,9 +57,11 @@ class Board extends React.Component {
         // network state
       }
     }
-    else if((this.state.white === (b[i] > 0)) || ((!this.state.white) === (b[i] < 0))) {
+    else if((this.state.white && (b[i] > 0)) || ((!this.state.white) && (b[i] < 0))) {
       // user's piece
       console.log("user piece");
+      console.log(!this.state.white);
+      console.log(b[i] < 0);
       this.setState( {pointClicked: i} );
       let possibleMoves = [];
       this.state.dice.forEach ((die) => {
