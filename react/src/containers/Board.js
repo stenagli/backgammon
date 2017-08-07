@@ -1,5 +1,6 @@
 import React from 'react'
 import Point from './Point'
+import Dice from '../components/Dice'
 
 class Board extends React.Component {
   constructor(props) {
@@ -12,9 +13,12 @@ class Board extends React.Component {
       pointClicked: null,
       possibleMoves: []
     }
+    this.handleClick = this.handleClick.bind(this)
   }
 
   handleClick(i) {
+    console.log("handleClick called");
+    console.log(`handleClick(${i})`);
     // If board[i] is clicked,
     // add all possible indexes that the checker could be moved to
     // into this.state.possibleMoves
@@ -24,9 +28,10 @@ class Board extends React.Component {
     // put one at the i clicked.
     // Otherwise, update pointClicked and possibleMoves.
 
+    let b = this.state.board;
+
     if(this.state.possibleMoves.includes(i)){
       // Move the checker from pointClicked to i
-      b = this.state.board;
       if(this.state.white){
         b[this.state.pointClicked] -= 1;
         b[i] += 1;
@@ -36,27 +41,42 @@ class Board extends React.Component {
         b[i] -= 1;
       }
 
-      // TODO Send the new board to the server via ActionCable
+      // Remove the die from dice
+      let dice = this.state.dice;
+      dice.splice(dice.indexOf(i), 1);
+      this.setState({
+        board: b,
+        dice: dice
+      })
+
+
+      if(dice.length === 0){
+        // TODO Send the new board to the server via ActionCable
+        // and also flip the turn bit both in react and 
+        // network state
+      }
     }
     else if((this.state.white === (b[i] > 0)) || ((!this.state.white) === (b[i] < 0))) {
       // user's piece
+      console.log("user piece");
       this.setState( {pointClicked: i} );
       let possibleMoves = [];
       this.state.dice.forEach ((die) => {
         if((i - die) >= 0) {
           if(this.state.white && (b[i-die] >= -1)){
-            possibleMoves.push(i)
+            possibleMoves.push(i-die)
           }
           else if(!this.state.white && (b[i-die] <= 1)){
-            possibleMoves.push(i)
+            possibleMoves.push(i-die)
           }
         }
       });
+      console.log("possibleMoves");
+      console.log(possibleMoves);
+      this.setState( {possibleMoves: possibleMoves} );
     }
   }
 
-
-  }
   newBoard(white) {
     let newBoard = new Array(26);
     newBoard.fill(0);
@@ -264,25 +284,30 @@ class Board extends React.Component {
     // and pass down a wrapper function for handleClick(i)
     let topRow = new Array(12);
     for(let i = 0; i < 12; i++) {
+      let clName = (this.state.possibleMoves.includes(12+i) ? "topPoint possibleMove" : "topPoint")
       topRow[i] = (<Point
-        className="topPoint"
+        className={clName}
         key={i}
         checkers = {this.state.board[12+i]}
+        onClick={()=>this.handleClick(12+i)}
         />)
     }
 
     let bottomRow = new Array(12);
     for(let i = 0; i < 12; i++) {
+      let clName = (this.state.possibleMoves.includes(11-i) ? "bottomPoint possibleMove" : "bottomPoint")
       bottomRow[i] = (<Point
-        className="bottomPoint"
+        className={clName}
         key={i}
         checkers={this.state.board[11-i]}
+        onClick={()=>this.handleClick(11-i)}
         />)
     }
 
     return (
       <div>
         <p>I am a React game board!</p>
+        <Dice dice={this.state.dice} />
         <div className="topRow">
           {topRow}  
         </div>
