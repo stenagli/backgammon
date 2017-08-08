@@ -14,6 +14,7 @@ class Board extends React.Component {
       possibleMoves: []
     }
     this.handleClick = this.handleClick.bind(this)
+    this.sendBoard = this.sendBoard.bind(this)
   }
 
   handleClick(i) {
@@ -55,6 +56,8 @@ class Board extends React.Component {
         // TODO Send the new board to the server via ActionCable
         // and also flip the turn bit both in react and 
         // network state
+
+        this.sendBoard();
       }
     }
     else if((this.state.white && (b[i] > 0)) || ((!this.state.white) && (b[i] < 0))) {
@@ -78,6 +81,72 @@ class Board extends React.Component {
       console.log(possibleMoves);
       this.setState( {possibleMoves: possibleMoves} );
     }
+  }
+
+  sendBoard() {
+    let b = this.state.board
+
+    if(!this.state.white) {
+      // reverse the board
+      for(let i = 0; i < 12; i++){
+        let temp = b[i];
+        b[i] = b[23-i];
+        b[23-i] = temp;
+      }
+    }
+
+    let s1 = 0;
+    for(let i = 0; i < 6; i++) {
+      s1 |= ( (b[i] & 0x1F) << 5*i)
+    }
+    // last 2 bits
+    s1 |= (b[6] & 0x3) << 30;
+
+    let s2 = 0;
+    // remaining 3 bits from b[6]
+    s2 |= (b[6] >>> 2) & 0x7;
+    // next 25 bits
+    for(let i = 7; i < 12; i++) {
+      s2 |= (b[i] & 0x1F) << ((5*(i-7)) + 3)
+    }
+    // last 4 bits
+    s2 |= (b[12] & 0xF) << 28;
+
+    let s3 = 0;
+    // remaining 1 bit from b[12]
+    s3 |= (b[12] >>> 4) & 0x1 
+    // next 30 bits
+    for(let i = 13; i < 19; i++) {
+      s3 |= (b[i] & 0x1F) << ((5*(i-13)) + 1)
+    }
+    // last bit
+    s3 |= (b[19] & 0x1) << 31;
+
+    let s4 = 0;
+    // first 4 bits from b[19]
+    s4 |= (b[19] >>> 1) & 0xF;
+    // remaining 20 bits from normal 5-bit board
+    for(let i = 20; i < 24; i++) {
+      s4 |= (b[i] & 0x1F) << ((5*(i-20)) + 4)
+    }
+    // 4 bits for white's bar
+    s4 |= (b[24] & 0xF) << 24;
+    // 4 bits for black's bar
+    s4 |= (b[25] & 0xF) << 28;
+
+    // Set bit 7 of turn_and_dice, i.e. whether white's turn
+    let turn_and_dice = 0;
+    turn_and_dice |= (this.state.white !== this.state.myTurn ? 1 : 0) << 6;
+
+    App.gameChannel.send({
+      s1: s1,
+      s2: s2,
+      s3: s3,
+      s4: s4,
+      turn_and_dice: turn_and_dice
+    })
+
+
   }
 
   newBoard(white) {
@@ -178,54 +247,6 @@ class Board extends React.Component {
     }
 
     this.setState( {board: board} );
-  }
-
-  compressBoard(b) {
-    let s1 = 0;
-    for(let i = 0; i < 6; i++) {
-      s1 |= ( (b[i] & 0x1F) << 5*i)
-    }
-    // last 2 bits
-    s1 |= (b[6] & 0x3) << 30;
-
-    let s2 = 0;
-    // remaining 3 bits from b[6]
-    s2 |= (b[6] >>> 2) & 0x7;
-    // next 25 bits
-    for(let i = 7; i < 12; i++) {
-      s2 |= (b[i] & 0x1F) << ((5*(i-7)) + 3)
-    }
-    // last 4 bits
-    s2 |= (b[12] & 0xF) << 28;
-
-    let s3 = 0;
-    // remaining 1 bit from b[12]
-    s3 |= (b[12] >>> 4) & 0x1 
-    // next 30 bits
-    for(let i = 13; i < 19; i++) {
-      s3 |= (b[i] & 0x1F) << ((5*(i-13)) + 1)
-    }
-    // last bit
-    s3 |= (b[19] & 0x1) << 31;
-
-    let s4 = 0;
-    // first 4 bits from b[19]
-    s4 |= (b[19] >>> 1) & 0xF;
-    // remaining 20 bits from normal 5-bit board
-    for(let i = 20; i < 24; i++) {
-      s4 |= (b[i] & 0x1F) << ((5*(i-20)) + 4)
-    }
-    // 4 bits for white's bar
-    s4 |= (b[24] & 0xF) << 24;
-    // 4 bits for black's bar
-    s4 |= (b[25] & 0xF) << 28;
-
-    // Set bit 7 of turn_and_dice, i.e. whether white's turn
-    let turn_and_dice = 0;
-    turn_and_dice |= (this.state.white !== this.state.myTurn ? 1 : 0) << 6;
-
-
-
   }
 
   componentDidMount() {
