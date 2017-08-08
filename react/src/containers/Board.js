@@ -57,6 +57,7 @@ class Board extends React.Component {
         // and also flip the turn bit both in react and 
         // network state
 
+        console.log(this.state.board);
         this.sendBoard();
       }
     }
@@ -137,6 +138,10 @@ class Board extends React.Component {
     // Set bit 7 of turn_and_dice, i.e. whether white's turn
     let turn_and_dice = 0;
     turn_and_dice |= (this.state.white !== this.state.myTurn ? 1 : 0) << 6;
+    console.log(s1);
+    console.log(s2);
+    console.log(s3);
+    console.log(s4);
 
     App.gameChannel.send({
       s1: s1,
@@ -186,13 +191,13 @@ class Board extends React.Component {
     }
     // board[6]'s first two bits were set above;
     // set the other three from the beginning of s2
-    board[6] &= ((s2 & 0x7) << 2);
+    board[6] |= ((s2 & 0x7) << 2);
     // two's complement the 5 bit value
     board[6] -= (board[6] & 0x10) * 2;
 
     s2 >>>= 3;
 
-    // extract the remaining bits from s2
+    // extract the remaining 29 bits from s2
     for(let i = 7; i < 13; i++) {
       board[i] = s2 & 0x1F
       // two's complement the 5 bit value
@@ -201,13 +206,13 @@ class Board extends React.Component {
       s2 >>>= 5;
     }
     // board[12]'s last bit is in s3
-    board[12] &= ((s3 & 0x1) << 4);
+    board[12] |= ((s3 & 0x1) << 4);
     // two's complement the 5 bit value
     board[12] -= (board[12] & 0x10) * 2;
 
     s3 >>>= 1;
 
-    // extract the remaining bits from s3
+    // extract the remaining 31 bits from s3
     for(let i = 13; i < 20; i++) {
       board[i] = s3 & 0x1F;
       // two's complement the 5 bit value
@@ -215,14 +220,20 @@ class Board extends React.Component {
 
       s3 >>>= 5;
     }
+
+    console.log(s4);
+    console.log(board[19])
+
     // board[19]'s remaining 4 bits are in s4
-    board[19] &= ((s4 & 0xF) << 1);
+    board[19] |= ((s4 & 0xF) << 1);
+    console.log(board[19])
     // two's complement the 5 bit value
     board[19] -= (board[19] & 0x10) * 2;
+    console.log(board[19])
 
-    s4 >>= 4;
+    s4 >>>= 4;
 
-    //extract remaining bits from s4
+    //extract remaining 20 board bits from s4
     for(let i = 20; i < 24; i++) {
       board[i] = s4 & 0x1F;
       // two's complement the 5 bit value
@@ -237,12 +248,16 @@ class Board extends React.Component {
     // extract next 4 bits for black's bar
     board[25] = s4 & 0xF;
 
-    if(!white) {
+    board.forEach((v, i) => {
+      console.log(`Value at board ${i}: ${v}`);
+    })
+
+    if(!this.state.white) {
       // reverse the board
       for(let i = 0; i < 12; i++){
-        let temp = newBoard[i];
-        newBoard[i] = newBoard[23-i];
-        newBoard[23-i] = temp;
+        let temp = board[i];
+        board[i] = board[23-i];
+        board[23-i] = temp;
       }
     }
 
@@ -307,7 +322,10 @@ class Board extends React.Component {
           {
             connected: () => console.log("GameChannel connected"),
             disconnected: () => console.log("GameChannel disconnected"),
-            received: data => console.log(data)
+            received: data => {
+              console.log(data)
+              this.remoteBoard(data.s1, data.s2, data.s3, data.s4);
+            }
           }
         );
 
