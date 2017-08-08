@@ -14,7 +14,7 @@ class Point extends React.Component {
 
     //}
 
-    let clName = (this.props.checkers > 0) ? this.props.className + " white" : this.props.className
+    let clName = (this.props.checkers > 0) ? "white" : ""
     let checkers;
     if(this.props.checkers > 0)
       checkers = this.props.checkers;
@@ -23,7 +23,9 @@ class Point extends React.Component {
 
 
     return (
-      <div onClick={this.props.onClick} className={clName}><p>{checkers}</p></div>
+      <div onClick={this.props.onClick} className={this.props.className}>
+      <p className={clName}>{checkers}</p>
+    </div>
     )
   }
 }

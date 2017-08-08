@@ -30,11 +30,11 @@
 
 
 .topPoint.possibleMove {
-  border-top-color: green;
+  border-top-color: teal;
 }
 
 .bottomPoint.possibleMove {
-  border-bottom-color: green;
+  border-bottom-color: teal;
 }
 
 .white {

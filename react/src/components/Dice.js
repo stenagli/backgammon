@@ -8,16 +8,12 @@ class Dice extends React.Component {
   }
 
   render() {
-    let lis = this.props.dice.map((die) => {
-      return(<li>{die}</li>)
-    });
+    let dice = "Dice: "
+    this.props.dice.forEach(die => (dice += ` ${die}`))
 
     return (
       <div>
-        <p>Dice:</p>
-        <ul>
-          {lis}
-        </ul>
+        <p>{dice}</p>
       </div>
     )
   }

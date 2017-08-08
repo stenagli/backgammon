@@ -18,6 +18,8 @@ class Board extends React.Component {
   }
 
   handleClick(i) {
+    if(!this.state.myTurn)
+      return
     console.log("handleClick called");
     console.log(`handleClick(${i})`);
     // If board[i] is clicked,
@@ -178,7 +180,7 @@ class Board extends React.Component {
     this.setState( {board: newBoard} );
   }
 
-  remoteBoard(s1, s2, s3, s4) {
+  remoteBoard(s1, s2, s3, s4, turn_and_dice) {
     let board = new Array(26);
 
     // extract s1's data
@@ -261,7 +263,28 @@ class Board extends React.Component {
       }
     }
 
-    this.setState( {board: board} );
+    // Handle turn_and_dice
+    console.log(turn_and_dice)
+    let die1 = turn_and_dice & 0x7;
+    console.log(die1)
+    turn_and_dice >>>= 3;
+    let die2 = turn_and_dice & 0x7;
+    console.log(die2)
+    let dice = [die1, die2];
+    if(die1 === die2) // doubles
+      dice = [...dice, ...dice];
+    turn_and_dice >>>= 3;
+    // It is myTurn if the final two bits are equal
+    let myTurn = (this.state.white && ((turn_and_dice & 0x1) === 1)) || (!this.state.white && ((turn_and_dice & 0x1) === 0))
+    console.log(myTurn)
+    this.setState({
+      myTurn: myTurn,
+      dice: dice,
+      board: board
+    })
+
+
+    //this.setState( {board: board} );
   }
 
   componentDidMount() {
@@ -324,22 +347,15 @@ class Board extends React.Component {
             disconnected: () => console.log("GameChannel disconnected"),
             received: data => {
               console.log(data)
-              this.remoteBoard(data.s1, data.s2, data.s3, data.s4);
+              this.remoteBoard(data.s1, data.s2, data.s3, data.s4, data.turn_and_dice);
             }
           }
         );
 
-        console.log("Finished subscription, starting message")
+        console.log("Finished subscription")
 
-        App.gameChannel.send("Hello World!");
-        App.gameChannel.send({ sent_by: "Paul", body: "This is a cool chat app." })
-
-        console.log("Finished message")
-          })
+      })
       .catch(error => console.error(`Error in fetch: ${error.message}`));
-
-    App.gameChannel.send({message: "Test message!"});
-
   }
 
   render() {
@@ -352,7 +368,7 @@ class Board extends React.Component {
       let clName = (this.state.possibleMoves.includes(12+i) ? "topPoint possibleMove" : "topPoint")
       topRow[i] = (<Point
         className={clName}
-        key={i}
+        key={12+i}
         checkers = {this.state.board[12+i]}
         onClick={()=>this.handleClick(12+i)}
         />)
@@ -363,7 +379,7 @@ class Board extends React.Component {
       let clName = (this.state.possibleMoves.includes(11-i) ? "bottomPoint possibleMove" : "bottomPoint")
       bottomRow[i] = (<Point
         className={clName}
-        key={i}
+        key={11-i}
         checkers={this.state.board[11-i]}
         onClick={()=>this.handleClick(11-i)}
         />)
@@ -371,7 +387,7 @@ class Board extends React.Component {
 
     return (
       <div>
-        <p>I am a React game board!</p>
+        <p>You are playing as {this.state.white ? "white" : "black"} and it is your {this.state.myTurn ? "" : "opponent's"} turn</p>
         <Dice dice={this.state.dice} />
         <div className="topRow">
           {topRow}  
