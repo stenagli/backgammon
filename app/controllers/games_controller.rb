@@ -2,6 +2,10 @@ class GamesController < ApplicationController
 
   before_action :authenticate_user!
 
+  def index
+    @games = Game.where("white_user_id = ? OR black_user_id = ?", current_user.id, current_user.id)
+  end
+
   def show
     # Renders a React component for the game
     @game_id = params[:id]
