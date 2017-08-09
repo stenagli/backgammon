@@ -6,5 +6,5 @@ test:
 
 production:
   adapter: redis
-  url: ENV["REDIS_URL"]
+  url: redis://h:p9647e90095032fd4dbf947becfe4c4259ab8598041af86cd7d6831c88d8a6c88@ec2-34-227-145-196.compute-1.amazonaws.com:11489
   channel_prefix: backgammon_production
