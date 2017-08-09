@@ -36,12 +36,34 @@ class Board extends React.Component {
     if(this.state.possibleMoves.includes(i)){
       // Move the checker from pointClicked to i
       if(this.state.white){
+        // Handle bumping the opponent
+        if(b[i] === -1){ // one black piece
+          console.log("Bumping opponent")
+          b[i] = 1;
+          console.log(b[i])
+          b[25] += 1;
+          console.log(b[25])
+        }
+        else {
+          console.log("Incrementing the target location");
+          b[i] += 1;
+        }
         b[this.state.pointClicked] -= 1;
-        b[i] += 1;
       }
       else {
+        // Handle bumping the opponent
+        if(b[i] === 1){ // one white piece
+          console.log("Bumping opponent")
+          b[i] = -1;
+          console.log(b[i])
+          b[24] += 1;
+          console.log(b[24])
+        }
+        else {
+          console.log("Incrementing the target location");
+          b[i] -= 1;
+        }
         b[this.state.pointClicked] += 1;
-        b[i] -= 1;
       }
 
       // Remove the die from dice
@@ -56,8 +78,7 @@ class Board extends React.Component {
 
       if(dice.length === 0){
         // TODO Send the new board to the server via ActionCable
-        // and also flip the turn bit both in react and 
-        // network state
+        // and also flip the turn bit
 
         console.log(this.state.board);
         this.sendBoard();
@@ -282,9 +303,6 @@ class Board extends React.Component {
       dice: dice,
       board: board
     })
-
-
-    //this.setState( {board: board} );
   }
 
   componentDidMount() {
@@ -360,9 +378,6 @@ class Board extends React.Component {
 
   render() {
 
-    // TODO: Add class to Points
-    // with an index in this.state.possibleMoves
-    // and pass down a wrapper function for handleClick(i)
     let topRow = new Array(12);
     for(let i = 0; i < 12; i++) {
       let clName = (this.state.possibleMoves.includes(12+i) ? "topPoint possibleMove" : "topPoint")
