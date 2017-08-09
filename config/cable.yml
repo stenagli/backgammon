@@ -6,5 +6,5 @@ test:
 
 production:
   adapter: redis
-  url: $redis.url
+  url: ENV["REDIS_URL"]
   channel_prefix: backgammon_production
