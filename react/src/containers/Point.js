@@ -14,17 +14,41 @@ class Point extends React.Component {
 
     //}
 
-    let clName = (this.props.checkers > 0) ? "white" : ""
-    let checkers;
+    let clName;
     if(this.props.checkers > 0)
-      checkers = this.props.checkers;
+      clName = "white"
+    else if(this.props.checkers < 0)
+      clName = "black"
+    let num;
+    if(this.props.checkers > 0)
+      num = this.props.checkers;
     else if (this.props.checkers < 0)
-      checkers = -this.props.checkers;
+      num = -this.props.checkers;
+
+    console.log(this.props.checkers);
+    let checkers = new Array(Math.abs(this.props.checkers));
+    let checkerDiv = (
+          <div className={clName}>{num}</div>
+    )
+    console.log(checkers);
+    for(let i = 0; i < Math.abs(this.props.checkers); i++){
+      checkers[i] = (<div
+        key={i}
+        className={clName}>
+        {num}
+        </div>)
+    }
+    console.log(checkers);
+
 
 
     return (
       <div onClick={this.props.onClick} className={this.props.className}>
-      <p className={clName}>{checkers}</p>
+      <div className="checkerContainerOuter">
+        <div className="checkerContainerInner">
+          {checkers}
+        </div>
+      </div>
     </div>
     )
   }

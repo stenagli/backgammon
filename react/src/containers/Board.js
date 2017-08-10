@@ -5,10 +5,12 @@ import Dice from '../components/Dice'
 class Board extends React.Component {
   constructor(props) {
     super(props)
+    let emptyBoard = new Array(26);
+    emptyBoard.fill(0);
     this.state = {
       white: null,
       myTurn: null,
-      board: [],
+      board: emptyBoard,
       dice: [],
       pointClicked: null,
       possibleMoves: []
@@ -360,9 +362,6 @@ class Board extends React.Component {
 
   render() {
 
-    // TODO: Add class to Points
-    // with an index in this.state.possibleMoves
-    // and pass down a wrapper function for handleClick(i)
     let topRow = new Array(12);
     for(let i = 0; i < 12; i++) {
       let clName = (this.state.possibleMoves.includes(12+i) ? "topPoint possibleMove" : "topPoint")
@@ -374,6 +373,8 @@ class Board extends React.Component {
         />)
     }
 
+    // Add the bar at pos 5 with your number of checkers
+
     let bottomRow = new Array(12);
     for(let i = 0; i < 12; i++) {
       let clName = (this.state.possibleMoves.includes(11-i) ? "bottomPoint possibleMove" : "bottomPoint")
@@ -384,6 +385,8 @@ class Board extends React.Component {
         onClick={()=>this.handleClick(11-i)}
         />)
     }
+    
+    // Add the bar at pos 5 with your opponent's number of checkers
 
     return (
       <div>
