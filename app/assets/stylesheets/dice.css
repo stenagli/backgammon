@@ -1,0 +1,29 @@
+.die {
+  width: 1.5em;
+  height: 1.5em;
+  margin: 0 .75em;
+}
+
+.die1 {
+  background-image: url('dice-six-faces-one.svg')
+}
+
+.die2 {
+  background-image: url('dice-six-faces-two.svg')
+}
+
+.die3 {
+  background-image: url('dice-six-faces-three.svg')
+}
+
+.die4 {
+  background-image: url('dice-six-faces-four.svg')
+}
+
+.die5 {
+  background-image: url('dice-six-faces-five.svg')
+}
+
+.die6 {
+  background-image: url('dice-six-faces-six.svg')
+}

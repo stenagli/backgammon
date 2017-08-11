@@ -1,4 +1,5 @@
 import React from 'react'
+import Die from './Die'
 
 class Info extends React.Component {
   constructor(props) {
@@ -8,8 +9,12 @@ class Info extends React.Component {
   }
 
   render() {
-    let dice = "Dice: "
-    this.props.dice.forEach(die => (dice += ` ${die}`))
+    let dice = [];
+    this.props.dice.forEach(die => {
+      dice.push(
+        <Die num={die} />
+      )
+    })
 
     let turn;
     if(this.props.white){
@@ -29,7 +34,7 @@ class Info extends React.Component {
       <div className="info">
       Playing as: <div className={this.props.white ? "white" : "black"}></div>
       Turn: <div className={turn}></div>
-        <div>{dice}</div>
+        Dice:   {dice}
       </div>
     )
   }
