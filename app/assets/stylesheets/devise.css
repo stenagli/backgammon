@@ -16,8 +16,8 @@ ul.hmenu li {
 }
 
 .hmenu li a {
-    color: white;
+    color: #3E2302;
     text-align: center;
-    padding: 1em;
+    padding: 0 1em;
     text-decoration: none;
 }
