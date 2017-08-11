@@ -5,25 +5,25 @@
 }
 
 .die1 {
-  background-image: url('dice-six-faces-one.svg')
+  background-image: url(<%= asset_path('dice-six-faces-one.svg') %>)
 }
 
 .die2 {
-  background-image: url('dice-six-faces-two.svg')
+  background-image: url(<%= asset_path('dice-six-faces-two.svg') %>)
 }
 
 .die3 {
-  background-image: url('dice-six-faces-three.svg')
+  background-image: url(<%= asset_path('dice-six-faces-three.svg') %>)
 }
 
 .die4 {
-  background-image: url('dice-six-faces-four.svg')
+  background-image: url(<%= asset_path('dice-six-faces-four.svg') %>)
 }
 
 .die5 {
-  background-image: url('dice-six-faces-five.svg')
+  background-image: url(<%= asset_path('dice-six-faces-five.svg') %>)
 }
 
 .die6 {
-  background-image: url('dice-six-faces-six.svg')
+  background-image: url(<%= asset_path('dice-six-faces-six.svg') %>)
 }
