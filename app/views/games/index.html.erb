@@ -1,5 +1,5 @@
-<h3>Your current games</h3>
 <%= link_to "New Game", new_game_path %>
+<h3>Your current games</h3>
 <ul>
   <% @games.each do |g| %>
     <li><%= link_to "Game #{g.id}", g %></li>
