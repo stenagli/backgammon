@@ -1,6 +1,14 @@
+.board {
+  border: .5em solid #3E2302;
+  border-radius: 2%;
+  width: 26em;
+}
+
 .topRow, .bottomRow {
   display: flex;
   flex-direction: row;
+  background-color: #DEB27F;
+  width: 26em;
 }
 
 .topPoint {
@@ -8,24 +16,17 @@
   height: 0;
   border-left: 1em solid transparent;
   border-right: 1em solid transparent;
-  border-top: 6em solid brown;
+  border-top: 8em solid #774000;
+  position: relative;
 }
-
-.topPoint p {
-  margin-top: -6em;
-}
-
-.bottomPoint p {
-  margin-top: 5em;
-}
-
 
 .bottomPoint {
   width: 0;
   height: 0;
   border-left: 1em solid transparent;
   border-right: 1em solid transparent;
-  border-bottom: 6em solid brown;
+  border-bottom: 8em solid #774000;
+  position: relative;
 }
 
 
@@ -37,10 +38,51 @@
   border-bottom-color: teal;
 }
 
+.topPoint .checkerContainerOuter {
+  position: relative;
+  top: -8em;
+  left: -.75em;
+  z-index: 1;
+}
+.bottomPoint .checkerContainerOuter {
+  position: relative;
+  bottom: -8em;;
+  left: -.75em;
+}
+.bottomPoint .checkerContainerInner{
+  position: absolute;
+  bottom: 0;
+}
+
+.topBar, .bottomBar {
+  background-color: #3E2302;
+  width: 2em;
+  height: 8em;
+}
+
+.white, .black {
+  width: 1.5em;
+  height: 1.5em;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 1.5em;
+}
+
 .white {
+  background-color: white;
+  color: black;
+}
+.black {
+  background-color: black;
   color: white;
+}
+
+.topPoint .white, .topPoint .black {
+}
+.bottomPoint .white, .buttomPoint .black {
 }
 
 body {
   font-size: 2em;
+  background-color:  #9fdf9f;
 }
