@@ -1,6 +1,6 @@
 import React from 'react'
 import Point from './Point'
-import Dice from '../components/Dice'
+import Info from '../components/Info'
 import Bar from '../components/Bar'
 
 class Board extends React.Component {
@@ -387,8 +387,11 @@ class Board extends React.Component {
 
     return (
       <div>
-        <p>You are playing as {this.state.white ? "white" : "black"} and it is your {this.state.myTurn ? "" : "opponent's"} turn</p>
-        <Dice dice={this.state.dice} />
+        <Info
+          white={this.state.white}
+          myTurn={this.state.myTurn}
+          dice={this.state.dice}
+          />
         <div className="board">
           <div className="topRow">
             {topRow}  

@@ -4,6 +4,15 @@
   width: 26em;
 }
 
+.info {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 1em;
+}
+.info .white, .info .black {
+  margin: 0 1em;
+}
+
 .topRow, .bottomRow {
   display: flex;
   flex-direction: row;
