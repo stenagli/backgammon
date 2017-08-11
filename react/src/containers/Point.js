@@ -8,37 +8,38 @@ class Point extends React.Component {
   }
 
   render() {
-    //let column
-    //let stop = min(this.props.checkers, 5)
-    //for(let i = 0, i < stop, i++){
-
-    //}
 
     let clName;
     if(this.props.checkers > 0)
       clName = "white"
     else if(this.props.checkers < 0)
       clName = "black"
-    let num;
-    if(this.props.checkers > 0)
-      num = this.props.checkers;
-    else if (this.props.checkers < 0)
-      num = -this.props.checkers;
 
-    console.log(this.props.checkers);
     let checkers = new Array(Math.abs(this.props.checkers));
-    let checkerDiv = (
-          <div className={clName}>{num}</div>
-    )
-    console.log(checkers);
-    for(let i = 0; i < Math.abs(this.props.checkers); i++){
+    for(let i = 0; i < checkers.length; i++){
       checkers[i] = (<div
         key={i}
         className={clName}>
-        {num}
         </div>)
     }
-    console.log(checkers);
+    
+    // Add overflow numbers if necessary
+    if(this.props.checkers >= 6 || this.props.checkers <= -6){
+      if(this.props.className.includes("topPoint")){
+        checkers[0] = (<div
+          key={0}
+          className={clName}>
+          {Math.abs(this.props.checkers)}
+          </div>)
+      }
+      else {
+        checkers[checkers.length-1] = (<div
+          key={checkers.length-1}
+          className={clName}>
+          {Math.abs(this.props.checkers)}
+          </div>)
+      }
+    }
 
 
 

@@ -1,3 +1,9 @@
+.board {
+  border: .5em solid #3E2302;
+  border-radius: 2%;
+  width: 26em;
+}
+
 .topRow, .bottomRow {
   display: flex;
   flex-direction: row;
@@ -46,6 +52,12 @@
 .bottomPoint .checkerContainerInner{
   position: absolute;
   bottom: 0;
+}
+
+.topBar, .bottomBar {
+  background-color: #3E2302;
+  width: 2em;
+  height: 8em;
 }
 
 .white, .black {

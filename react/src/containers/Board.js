@@ -1,6 +1,7 @@
 import React from 'react'
 import Point from './Point'
 import Dice from '../components/Dice'
+import Bar from '../components/Bar'
 
 class Board extends React.Component {
   constructor(props) {
@@ -22,8 +23,6 @@ class Board extends React.Component {
   handleClick(i) {
     if(!this.state.myTurn)
       return
-    console.log("handleClick called");
-    console.log(`handleClick(${i})`);
     // If board[i] is clicked,
     // add all possible indexes that the checker could be moved to
     // into this.state.possibleMoves
@@ -57,19 +56,12 @@ class Board extends React.Component {
 
 
       if(dice.length === 0){
-        // TODO Send the new board to the server via ActionCable
-        // and also flip the turn bit both in react and 
-        // network state
-
         console.log(this.state.board);
         this.sendBoard();
       }
     }
     else if((this.state.white && (b[i] > 0)) || ((!this.state.white) && (b[i] < 0))) {
       // user's piece
-      console.log("user piece");
-      console.log(!this.state.white);
-      console.log(b[i] < 0);
       this.setState( {pointClicked: i} );
       let possibleMoves = [];
       this.state.dice.forEach ((die) => {
@@ -82,8 +74,6 @@ class Board extends React.Component {
           }
         }
       });
-      console.log("possibleMoves");
-      console.log(possibleMoves);
       this.setState( {possibleMoves: possibleMoves} );
     }
   }
@@ -225,9 +215,6 @@ class Board extends React.Component {
       s3 >>>= 5;
     }
 
-    console.log(s4);
-    console.log(board[19])
-
     // board[19]'s remaining 4 bits are in s4
     board[19] |= ((s4 & 0xF) << 1);
     console.log(board[19])
@@ -284,9 +271,6 @@ class Board extends React.Component {
       dice: dice,
       board: board
     })
-
-
-    //this.setState( {board: board} );
   }
 
   componentDidMount() {
@@ -374,6 +358,13 @@ class Board extends React.Component {
     }
 
     // Add the bar at pos 5 with your number of checkers
+    let topBar = (<Bar
+      key={-1}
+      className="topBar"
+      checkers={this.state.board[24]}
+        />);
+    topRow.splice(6, 0, topBar);
+
 
     let bottomRow = new Array(12);
     for(let i = 0; i < 12; i++) {
@@ -387,16 +378,24 @@ class Board extends React.Component {
     }
     
     // Add the bar at pos 5 with your opponent's number of checkers
+    let bottomBar = (<Bar
+      key={-1}
+      className="bottomBar"
+      checkers={this.state.board[25]}
+        />);
+    bottomRow.splice(6, 0, bottomBar);
 
     return (
       <div>
         <p>You are playing as {this.state.white ? "white" : "black"} and it is your {this.state.myTurn ? "" : "opponent's"} turn</p>
         <Dice dice={this.state.dice} />
-        <div className="topRow">
-          {topRow}  
-        </div>
-        <div className="bottomRow">
-          {bottomRow}  
+        <div className="board">
+          <div className="topRow">
+            {topRow}  
+          </div>
+          <div className="bottomRow">
+            {bottomRow}  
+          </div>
         </div>
       </div>
 
