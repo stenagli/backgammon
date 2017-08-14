@@ -19,5 +19,6 @@ class GameChannel < ApplicationCable::Channel
     data["turn_and_dice"] = turn_and_dice
 
     ActionCable.server.broadcast("game_#{params[:game_id]}", data)
+    Game.update(params[:game_id],data)
   end
 end

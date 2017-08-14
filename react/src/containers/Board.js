@@ -131,6 +131,10 @@ class Board extends React.Component {
 
     // Set bit 7 of turn_and_dice, i.e. whether white's turn
     let turn_and_dice = 0;
+    console.log("Setting turn bit");
+    console.log(this.state.white)
+    console.log(this.state.myTurn)
+    console.log(this.state.white !== this.state.myTurn)
     turn_and_dice |= (this.state.white !== this.state.myTurn ? 1 : 0) << 6;
     console.log(s1);
     console.log(s2);
@@ -138,10 +142,10 @@ class Board extends React.Component {
     console.log(s4);
 
     App.gameChannel.send({
-      s1: s1,
-      s2: s2,
-      s3: s3,
-      s4: s4,
+      state1: s1,
+      state2: s2,
+      state3: s3,
+      state4: s4,
       turn_and_dice: turn_and_dice
     })
 
@@ -175,75 +179,92 @@ class Board extends React.Component {
   remoteBoard(s1, s2, s3, s4, turn_and_dice) {
     let board = new Array(26);
 
-    // extract s1's data
-    for(let i = 0; i < 7; i++) {
-      board[i] = s1 & 0x1F
-      // two's complement the 5 bit value
-      board[i] -= (board[i] & 0x10) * 2;
-
-      s1 >>>= 5;
+    if(s1 === 0 && s2 === 0 && s3 === 0 && s4 === 0){
+      board.fill(0);
+      board[0] = -2;
+      board[5] = 5;
+      board[7] = 3;
+      board[11] = -5;
+      board[12] = 5;
+      board[16] = -3;
+      board[18] = -5;
+      board[23] = 2;
     }
-    // board[6]'s first two bits were set above;
-    // set the other three from the beginning of s2
-    board[6] |= ((s2 & 0x7) << 2);
-    // two's complement the 5 bit value
-    board[6] -= (board[6] & 0x10) * 2;
+    else {
 
-    s2 >>>= 3;
+      // extract s1's data
+      for(let i = 0; i < 7; i++) {
+        board[i] = s1 & 0x1F
+        // two's complement the 5 bit value
+        board[i] -= (board[i] & 0x10) * 2;
 
-    // extract the remaining 29 bits from s2
-    for(let i = 7; i < 13; i++) {
-      board[i] = s2 & 0x1F
+        s1 >>>= 5;
+      }
+      // board[6]'s first two bits were set above;
+      // set the other three from the beginning of s2
+      board[6] |= ((s2 & 0x7) << 2);
       // two's complement the 5 bit value
-      board[i] -= (board[i] & 0x10) * 2;
+      board[6] -= (board[6] & 0x10) * 2;
 
-      s2 >>>= 5;
-    }
-    // board[12]'s last bit is in s3
-    board[12] |= ((s3 & 0x1) << 4);
-    // two's complement the 5 bit value
-    board[12] -= (board[12] & 0x10) * 2;
+      s2 >>>= 3;
 
-    s3 >>>= 1;
+      // extract the remaining 29 bits from s2
+      for(let i = 7; i < 13; i++) {
+        board[i] = s2 & 0x1F
+        // two's complement the 5 bit value
+        board[i] -= (board[i] & 0x10) * 2;
 
-    // extract the remaining 31 bits from s3
-    for(let i = 13; i < 20; i++) {
-      board[i] = s3 & 0x1F;
+        s2 >>>= 5;
+      }
+      // board[12]'s last bit is in s3
+      board[12] |= ((s3 & 0x1) << 4);
       // two's complement the 5 bit value
-      board[i] -= (board[i] & 0x10) * 2;
+      board[12] -= (board[12] & 0x10) * 2;
 
-      s3 >>>= 5;
-    }
+      s3 >>>= 1;
 
-    // board[19]'s remaining 4 bits are in s4
-    board[19] |= ((s4 & 0xF) << 1);
-    console.log(board[19])
-    // two's complement the 5 bit value
-    board[19] -= (board[19] & 0x10) * 2;
-    console.log(board[19])
+      // extract the remaining 31 bits from s3
+      for(let i = 13; i < 20; i++) {
+        board[i] = s3 & 0x1F;
+        // two's complement the 5 bit value
+        board[i] -= (board[i] & 0x10) * 2;
 
-    s4 >>>= 4;
+        s3 >>>= 5;
+      }
 
-    //extract remaining 20 board bits from s4
-    for(let i = 20; i < 24; i++) {
-      board[i] = s4 & 0x1F;
+      // board[19]'s remaining 4 bits are in s4
+      board[19] |= ((s4 & 0xF) << 1);
+      console.log(board[19])
       // two's complement the 5 bit value
-      board[i] -= (board[i] & 0x10) * 2;
+      board[19] -= (board[19] & 0x10) * 2;
+      console.log(board[19])
 
-      s4 >>>= 5;
+      s4 >>>= 4;
+
+      //extract remaining 20 board bits from s4
+      for(let i = 20; i < 24; i++) {
+        board[i] = s4 & 0x1F;
+        // two's complement the 5 bit value
+        board[i] -= (board[i] & 0x10) * 2;
+
+        s4 >>>= 5;
+      }
+
+      // extract next 4 bits for white's bar
+      board[24] = s4 & 0xF;
+      s4 >>>= 4;
+      // extract next 4 bits for black's bar
+      board[25] = s4 & 0xF;
+
+      board.forEach((v, i) => {
+        console.log(`Value at board ${i}: ${v}`);
+      })
     }
 
-    // extract next 4 bits for white's bar
-    board[24] = s4 & 0xF;
-    s4 >>>= 4;
-    // extract next 4 bits for black's bar
-    board[25] = s4 & 0xF;
-
-    board.forEach((v, i) => {
-      console.log(`Value at board ${i}: ${v}`);
-    })
-
-    if(!this.state.white) {
+    let white = this.state.white;
+    if(white === null)
+      white = (turn_and_dice & (1 << 7)) ? true : false // bit 8
+    if(!white) {
       // reverse the board
       for(let i = 0; i < 12; i++){
         let temp = board[i];
@@ -263,10 +284,11 @@ class Board extends React.Component {
     if(die1 === die2) // doubles
       dice = [...dice, ...dice];
     turn_and_dice >>>= 3;
-    // It is myTurn if the final two bits are equal
-    let myTurn = (this.state.white && ((turn_and_dice & 0x1) === 1)) || (!this.state.white && ((turn_and_dice & 0x1) === 0))
+    console.log(turn_and_dice)
+    let myTurn = (white && ((turn_and_dice & 0x1) === 1)) || (!white && ((turn_and_dice & 0x1) === 0))
     console.log(myTurn)
     this.setState({
+      white: white,
       myTurn: myTurn,
       dice: dice,
       board: board
@@ -296,6 +318,7 @@ class Board extends React.Component {
         let state4 = view[3];
         let turn_and_dice = view[4];
         console.log(turn_and_dice)
+        /*
         let die1 = turn_and_dice & 0x7;
         console.log(die1)
         turn_and_dice >>>= 3;
@@ -318,9 +341,11 @@ class Board extends React.Component {
           dice: dice,
         })
         if(state1 === 0 && state2 === 0 && state3 === 0 && state4 === 0)
+          let white = ((turn_and_dice & (1 << 6)) === (1 << 6)); // bit 7
           this.newBoard(white);
         else
-          this.remoteBoard(state1, state2, state3, state4, white);
+        */
+        this.remoteBoard(state1, state2, state3, state4, turn_and_dice);
 
         console.log("Starting subscription")
         App.gameChannel = App.cable.subscriptions.create(
@@ -333,7 +358,7 @@ class Board extends React.Component {
             disconnected: () => console.log("GameChannel disconnected"),
             received: data => {
               console.log(data)
-              this.remoteBoard(data.s1, data.s2, data.s3, data.s4, data.turn_and_dice);
+              this.remoteBoard(data.state1, data.state2, data.state3, data.state4, data.turn_and_dice);
             }
           }
         );
