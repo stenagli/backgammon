@@ -32,7 +32,7 @@ class Board extends React.Component {
     // put one at the i clicked.
     // Otherwise, update pointClicked and possibleMoves.
 
-    let b = this.state.board;
+    let b = this.state.board.slice();
 
     if(this.state.possibleMoves.includes(i)){
       // Move the checker from pointClicked to i
@@ -57,7 +57,7 @@ class Board extends React.Component {
 
       if(dice.length === 0){
         console.log(this.state.board);
-        this.sendBoard();
+        this.sendBoard(b);
       }
     }
     else if((this.state.white && (b[i] > 0)) || ((!this.state.white) && (b[i] < 0))) {
@@ -78,8 +78,8 @@ class Board extends React.Component {
     }
   }
 
-  sendBoard() {
-    let b = this.state.board
+  sendBoard(board) {
+    let b = board.slice();
 
     if(!this.state.white) {
       // reverse the board
