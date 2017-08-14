@@ -15,7 +15,7 @@ class Point extends React.Component {
     else if(this.props.checkers < 0)
       clName = "black"
 
-    let checkers = new Array(Math.abs(this.props.checkers));
+    let checkers = new Array(Math.min(Math.abs(this.props.checkers), 5));
     for(let i = 0; i < checkers.length; i++){
       checkers[i] = (<div
         key={i}

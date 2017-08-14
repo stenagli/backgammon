@@ -1,9 +1,24 @@
+a {
+  text-decoration: none;
+  color: #3E2302;
+}
+
+ul {
+  list-style: none;
+}
+
 ul.hmenu {
-  list-style: none;	
   margin: 0 0 2em;
   padding: 0;
 }
 
 ul.hmenu li {
   display: inline;  
+}
+
+.hmenu li a {
+    color: #3E2302;
+    text-align: center;
+    padding: 0 1em;
+    text-decoration: none;
 }
