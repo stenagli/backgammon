@@ -36,6 +36,18 @@ class Board extends React.Component {
 
     if(this.state.possibleMoves.includes(i)){
       // Move the checker from pointClicked to i
+
+      if(b[i] === (this.state.white ? -1 : 1)){
+        // hit opponent
+        b[i] = (this.state.white ? 1 : -1);
+        b[25] += 1;
+      }
+      else {
+        b[i] += (this.state.white ? 1 : -1);
+      }
+      b[this.state.pointClicked] -= (this.state.white ? 1 : -1);
+      
+      /*
       if(this.state.white){
         // Handle bumping the opponent
         if(b[i] === -1){ // one black piece
@@ -66,10 +78,12 @@ class Board extends React.Component {
         }
         b[this.state.pointClicked] += 1;
       }
+      */
 
       // Remove the die from dice
       let dice = this.state.dice;
       dice.splice(dice.indexOf(this.state.pointClicked - i), 1);
+
       this.setState({
         board: b,
         dice: dice,
@@ -100,17 +114,33 @@ class Board extends React.Component {
     }
   }
 
+  reverseBoard(b) {
+    let temp;
+
+    // swap 24 Points
+    for(let i = 0; i < 12; i++){
+      temp = b[i];
+      b[i] = b[23-i];
+      b[23-i] = temp;
+    }
+
+    // swap the two Bar points
+    temp = b[24];
+    b[24] = b[25];
+    b[25] = temp;
+  }
+
+  encodeBoard(b) {
+  }
+
+  decodeBoard(b) {
+  }
+
   sendBoard(board) {
     let b = board.slice();
 
-    if(!this.state.white) {
-      // reverse the board
-      for(let i = 0; i < 12; i++){
-        let temp = b[i];
-        b[i] = b[23-i];
-        b[23-i] = temp;
-      }
-    }
+    if(!this.state.white)
+      this.reverseBoard(b);
 
     let s1 = 0;
     for(let i = 0; i < 6; i++) {
@@ -182,14 +212,8 @@ class Board extends React.Component {
     newBoard[18] = -5;
     newBoard[23] = 2;
 
-    if(!white) {
-      // reverse the board
-      for(let i = 0; i < 12; i++){
-        let temp = newBoard[i];
-        newBoard[i] = newBoard[23-i];
-        newBoard[23-i] = temp;
-      }
-    }
+    if(!white)
+      this.reverseBoard(newBoard);
 
     this.setState( {board: newBoard} );
   }
@@ -265,14 +289,8 @@ class Board extends React.Component {
       console.log(`Value at board ${i}: ${v}`);
     })
 
-    if(!this.state.white) {
-      // reverse the board
-      for(let i = 0; i < 12; i++){
-        let temp = board[i];
-        board[i] = board[23-i];
-        board[23-i] = temp;
-      }
-    }
+    if(!this.state.white)
+      this.reverseBoard(board);
 
     // Handle turn_and_dice
     console.log(turn_and_dice)
