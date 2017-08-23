@@ -49,7 +49,7 @@ class Board extends React.Component {
       
 
       // Remove the die from dice
-      let dice = this.state.dice;
+      let dice = this.state.dice.slice();
       dice.splice(dice.indexOf(this.state.pointClicked - i), 1);
 
       this.setState({
