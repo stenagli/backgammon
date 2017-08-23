@@ -47,38 +47,6 @@ class Board extends React.Component {
       }
       b[this.state.pointClicked] -= (this.state.white ? 1 : -1);
       
-      /*
-      if(this.state.white){
-        // Handle bumping the opponent
-        if(b[i] === -1){ // one black piece
-          console.log("Bumping opponent")
-          b[i] = 1;
-          console.log(b[i])
-          b[25] += 1;
-          console.log(b[25])
-        }
-        else {
-          console.log("Incrementing the target location");
-          b[i] += 1;
-        }
-        b[this.state.pointClicked] -= 1;
-      }
-      else {
-        // Handle bumping the opponent
-        if(b[i] === 1){ // one white piece
-          console.log("Bumping opponent")
-          b[i] = -1;
-          console.log(b[i])
-          b[24] += 1;
-          console.log(b[24])
-        }
-        else {
-          console.log("Incrementing the target location");
-          b[i] -= 1;
-        }
-        b[this.state.pointClicked] += 1;
-      }
-      */
 
       // Remove the die from dice
       let dice = this.state.dice;
@@ -92,7 +60,6 @@ class Board extends React.Component {
 
 
       if(dice.length === 0){
-        console.log(this.state.board);
         this.sendBoard(b);
       }
     }
@@ -130,11 +97,6 @@ class Board extends React.Component {
     b[25] = temp;
   }
 
-  encodeBoard(b) {
-  }
-
-  decodeBoard(b) {
-  }
 
   sendBoard(board) {
     let b = board.slice();
@@ -183,15 +145,7 @@ class Board extends React.Component {
 
     // Set bit 7 of turn_and_dice, i.e. whether white's turn
     let turn_and_dice = 0;
-    console.log("Setting turn bit");
-    console.log(this.state.white)
-    console.log(this.state.myTurn)
-    console.log(this.state.white !== this.state.myTurn)
     turn_and_dice |= (this.state.white !== this.state.myTurn ? 1 : 0) << 6;
-    console.log(s1);
-    console.log(s2);
-    console.log(s3);
-    console.log(s4);
 
     App.gameChannel.send({
       state1: s1,
@@ -280,10 +234,8 @@ class Board extends React.Component {
 
       // board[19]'s remaining 4 bits are in s4
       board[19] |= ((s4 & 0xF) << 1);
-      console.log(board[19])
       // two's complement the 5 bit value
       board[19] -= (board[19] & 0x10) * 2;
-      console.log(board[19])
 
       s4 >>>= 4;
 
@@ -301,10 +253,6 @@ class Board extends React.Component {
       s4 >>>= 4;
       // extract next 4 bits for black's bar
       board[25] = s4 & 0xF;
-
-      board.forEach((v, i) => {
-        console.log(`Value at board ${i}: ${v}`);
-      })
     }
 
     let white = this.state.white;
@@ -314,19 +262,14 @@ class Board extends React.Component {
       this.reverseBoard(board);
 
     // Handle turn_and_dice
-    console.log(turn_and_dice)
     let die1 = turn_and_dice & 0x7;
-    console.log(die1)
     turn_and_dice >>>= 3;
     let die2 = turn_and_dice & 0x7;
-    console.log(die2)
     let dice = [die1, die2];
     if(die1 === die2) // doubles
       dice = [...dice, ...dice];
     turn_and_dice >>>= 3;
-    console.log(turn_and_dice)
     let myTurn = (white && ((turn_and_dice & 0x1) === 1)) || (!white && ((turn_and_dice & 0x1) === 0))
-    console.log(myTurn)
     this.setState({
       white: white,
       myTurn: myTurn,
@@ -352,39 +295,10 @@ class Board extends React.Component {
       .then(arrayBuffer => {
         let view = new Int32Array(arrayBuffer);
         let state1 = view[0];
-        console.log(state1);
         let state2 = view[1];
         let state3 = view[2];
         let state4 = view[3];
         let turn_and_dice = view[4];
-        console.log(turn_and_dice)
-        /*
-        let die1 = turn_and_dice & 0x7;
-        console.log(die1)
-        turn_and_dice >>>= 3;
-        let die2 = turn_and_dice & 0x7;
-        console.log(die2)
-        let dice = [die1, die2];
-        if(die1 === die2) // doubles
-          dice = [...dice, ...dice];
-        turn_and_dice >>>= 3;
-        // It is myTurn if the final two bits are equal
-        let myTurn = turn_and_dice === 0x0 || turn_and_dice === 0x3
-        console.log(myTurn)
-        turn_and_dice >>>= 1;
-        let white = turn_and_dice === 0x1;
-        console.log(white)
-
-        this.setState({
-          white: white,
-          myTurn: myTurn,
-          dice: dice,
-        })
-        if(state1 === 0 && state2 === 0 && state3 === 0 && state4 === 0)
-          let white = ((turn_and_dice & (1 << 6)) === (1 << 6)); // bit 7
-          this.newBoard(white);
-        else
-        */
         this.remoteBoard(state1, state2, state3, state4, turn_and_dice);
 
         console.log("Starting subscription")
@@ -402,9 +316,6 @@ class Board extends React.Component {
             }
           }
         );
-
-        console.log("Finished subscription")
-
       })
       .catch(error => console.error(`Error in fetch: ${error.message}`));
   }
